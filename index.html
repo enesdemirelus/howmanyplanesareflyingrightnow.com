@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Planes in the Air.</title>
+        <meta name="viewport" content="width=device-width, initial-scale=0.7" charset="UTF-8">
+        <link rel="icon" href="logo.png" type="image/png">
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            /* background-color: #d1e7fb; */
+            background-color: rgb(236, 246, 247);
+            color: #332;
+        }
+
+        .buttons {
+            margin: 20px 0px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        body, html {
+            overflow-x: hidden;
+        }
+
+
+        button {
+            background: linear-gradient(to right, rgb(3, 133, 188), rgb(16, 161, 223));
+            border: none;
+            padding: 15px 30px;
+            color: white;
+            margin: 10px;
+            border-radius: 40px;
+            transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+            cursor: pointer;
+            font-size: 0.7em;
+        }
+
+        button:hover {
+            background: linear-gradient(to right, #1abc9c, #029175);
+            box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.2);
+            transform: translateY(-5px)
+        }
+
+        button:active {
+            transform: translateY(2px);
+            box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .plane_count {
+            margin-top: 10px;
+            font-size: 40px;
+            text-shadow: 0px 0px 0px;
+            color: #2980b9;
+            font-weight: bold;
+            margin-bottom: 30px;
+            padding: 10px;
+        }
+
+        .container {
+            font-size: 25px;
+            text-shadow: 0px 1px 2px rgb(0, 150, 173);
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            padding: 15px;
+            font-size: 1em;
+            color: #000000;
+            background-color: #ecf0f100;
+            text-align: center;
+            box-shadow: 0px -2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .footer a {
+            color: #0095ff;
+            text-decoration: underline;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: #09bb15;
+        }
+
+        @media (max-width: 600px) {
+            button {
+                width: 90%;
+                padding: 10px;
+            }
+            
+            .container {
+                font-size: 20px;
+            }
+            
+            .footer {
+                padding: 10px;
+                font-size: 0.7em;
+            }
+            
+        
+        }
+
+        @media (max-width: 420px) {
+            button {
+                width: 80%;
+                padding: 10px;
+                margin: 2px 2px 2px 2px;
+            }
+            
+            .container {
+                font-size: 10px;
+            }
+            
+            .footer {
+                padding: 10px;
+                font-size: 0.7em;
+            }
+
+            .plane_count {
+                font-size: 30px;
+            }
+            
+        
+        }
+
+
+        
+
+    </style>
+    </head>
+<body>
+    <div class="container">
+        <h1>How Many Planes Are Flying Right Now?</h1>
+        <div class="plane_count"> &#128747;	&#128747; LOADING  &#128748; &#128748; </div>
+        <div class="buttons">
+            <button onclick="fetchPlane('world')">World</button>
+            <button onclick="fetchPlane('north-america')">North America</button>
+            <button onclick="fetchPlane('south-america')">South America</button>
+            <button onclick="fetchPlane('europe')">Europe</button>
+            <button onclick="fetchPlane('asia')">Asia</button>
+            <button onclick="fetchPlane('africa')">Africa</button>
+            <button onclick="fetchPlane('australia')">Australia</button>
+        </div>
+    </div>
+
+    <div class="footer">
+        Powered by <a href="https://opensky-network.org" target="_blank">The OpenSky Network</a> and made by <a href="https://enesdemirel.dev" target="_blank">Enes Demirel</a>
+    </div>
+
+    <!--<h3>Numbers are not real right now! API access is down.</h3>-->
+
+    <script>
+        const no_access = {
+            'north-america' :1000, 
+            'south-america': 1250,
+            'europe':1125, 
+            'asia': 5000, 
+            'africa': 456,
+            'australia': 987,
+            'world': 10000
+        }
+        const continents = {
+            'north-america' : " in North America", 
+            'south-america': " in South America",
+            'europe': " in Europe", 
+            'asia': " in Asia", 
+            'africa': " in Africa",
+            'australia': " in Australia",
+            'world': " across the Globe"
+        }
+        const continentBounds = {
+            'north-america': {
+                lamin: 24.396308,
+                lomin: -125.0,
+                lamax: 49.384358,
+                lomax: -66.93457
+            },
+            'south-america': {
+                lamin: -55.0,
+                lomin: -82.0,
+                lamax: 12.0,
+                lomax: -34.0
+            },
+            'europe': {
+                lamin: 36.0,
+                lomin: -31.0,
+                lamax: 71.0,
+                lomax: 45.0
+            },
+            'asia': {
+                lamin: 1.0,
+                lomin: 25.0,
+                lamax: 77.0,
+                lomax: 180.0
+            },
+            'africa': {
+                lamin: -34.0,
+                lomin: -17.0,
+                lamax: 37.0,
+                lomax: 51.0
+            },
+            'australia': {
+                lamin: -44.0,
+                lomin: 112.0,
+                lamax: -10.0,
+                lomax: 154.0
+            },
+            'world': {
+                lamin: -90.0,
+                lomin: -180.0,
+                lamax: 90.0,
+                lomax: 180.0
+            }
+        };
+    
+        async function fetchPlane(continent) {
+            // document.querySelector('.plane_count').textContent = no_access[continent].toLocaleString()
+            const bounds = continentBounds[continent];
+            const url = `https://opensky-network.org/api/states/all?lamin=${bounds.lamin}&lomin=${bounds.lomin}&lamax=${bounds.lamax}&lomax=${bounds.lomax}`;
+            try {
+                const response = await fetch(url);
+                if (response.ok) {
+                    const data = await response.json();
+                    const numberOfPlanes = data.states ? data.states.length : 0;
+                    
+                document.querySelector('.plane_count').textContent = numberOfPlanes.toLocaleString() + " planes are flying" + continents[continent];
+                
+                } else {
+                    document.querySelector('.plane_count').textContent = 'We reached the daily API limit, please check later!';
+                }
+            } catch (error) {
+                document.querySelector('.plane_count').textContent = 'We reached the daily API limit, please check later!';
+                console.error('Error:', error);
+            }
+        }
+    
+        window.onload = () => fetchPlane('world');
+    </script>
+    
+
+
+
+</body>
+</html>
