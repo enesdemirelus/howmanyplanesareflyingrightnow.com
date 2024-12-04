@@ -1,6 +1,6 @@
-# Planes in the Air 🌍✈️
+# How Many Planes Are Flying Right Now? 🌍✈️
 
-Discover how many planes are flying in the skies right now! "Planes in the Air" provides real-time data on airborne flights globally or by continent. Explore the bustling air traffic with just a click.
+Discover how many planes are flying in the skies right now! "How Many Planes Are Flying Right Now?" provides real-time data on airborne flights globally or by continent. Explore the bustling air traffic with just a click.
 
 ## Features
 
